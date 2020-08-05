@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	cron "github.com/robfig/cron/v3"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/src-d/go-git.v4"
@@ -27,7 +26,15 @@ var (
 )
 
 func init() {
+
+}
+
+func main() {
 	var err error
+	err = Config.Init()
+	if err != nil {
+		panic("配置加载失败")
+	}
 	repository, err = git.PlainOpen(GitPath)
 	if err != nil {
 		panic(err)
@@ -37,9 +44,13 @@ func init() {
 		panic(err)
 	}
 	userStorage = NewMapStorage()
+
+	StartWork()
+	// 启动api接口
+	StartApi()
 }
 
-func main() {
+func StartWork() {
 	c := cron.New(cron.WithSeconds())
 	c.AddFunc("0 * * * * ?", func() {
 		for _, user := range userStorage.List() {
@@ -55,24 +66,8 @@ func main() {
 		}
 	})
 	c.Start()
-	r := gin.Default()
-	gr := r.Group("/api")
-	gr.POST("/user", Set)
-	gr.GET("/user/search", Search)
-	gr.DELETE("/user", Del)
-	r.Run() // 监听并在 0.0.0.0:8080 上启动服务
-}
-func Search(c *gin.Context) {
-
 }
 
-func Set(c *gin.Context) {
-
-}
-
-func Del(c *gin.Context) {
-
-}
 func GitWork(user *User) error {
 	now := time.Now()
 	user.LastRunTime = now
