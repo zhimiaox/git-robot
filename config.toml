@@ -1,0 +1,12 @@
+[Server]
+  ApiHost = "https://wechat.zhimiao.org/zhimiao-wechat"
+  APIListen = ":1319"
+  ReadTimeOut = 60
+  WriteTimeOut = 60
+
+[MapStorage]
+  FilePath = "data/MapStorage.json"
+  
+[Work]
+  GitPath = "data/work-git"
+  MaxErrCount = 5

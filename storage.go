@@ -1,10 +1,10 @@
 package main
 
 import (
-	"crypto/sha512"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"sync"
-	"time"
 )
 
 type UserStorage interface {
@@ -14,31 +14,34 @@ type UserStorage interface {
 	List() []*User
 }
 
-type User struct {
-	RemoteURL   string
-	DeployKeys  []byte
-	User        string
-	Email       string
-	ErrCount    int
-	LastRunTime time.Time
-}
-
-func (u *User) Sign() string {
-	s := fmt.Sprintf("%s-%s-%s", u.RemoteURL, u.User, u.Email)
-	sum512 := sha512.Sum512([]byte(s))
-	return fmt.Sprintf("%x", sum512)
-}
-
 // ---- 存储区
-
 type MapStorage struct {
 	sync.RWMutex
-	Map map[string]*User
+	Map        map[string]*User
+	SaveSignal chan int
 }
 
 func NewMapStorage() *MapStorage {
 	st := new(MapStorage)
 	st.Map = make(map[string]*User)
+	st.SaveSignal = make(chan int, 3)
+	if Config.MapStorage.FilePath != "" {
+		if jsonData, err := ioutil.ReadFile(Config.MapStorage.FilePath); err == nil {
+			json.Unmarshal(jsonData, &st.Map)
+		}
+		go func(m *MapStorage) {
+			for {
+				<-m.SaveSignal
+				st.RLock()
+				data, err := json.Marshal(&m.Map)
+				st.RUnlock()
+				if err != nil {
+					continue
+				}
+				ioutil.WriteFile(Config.MapStorage.FilePath, data, 0666)
+			}
+		}(st)
+	}
 	return st
 }
 
@@ -49,6 +52,8 @@ func (m *MapStorage) Set(user *User) error {
 		return fmt.Errorf("已存在")
 	}
 	m.Map[user.Sign()] = user
+	// 触发持久化
+	m.SaveSignal <- 1
 	return nil
 }
 
@@ -56,6 +61,7 @@ func (m *MapStorage) Del(key string) error {
 	m.Lock()
 	defer m.Unlock()
 	delete(m.Map, key)
+	m.SaveSignal <- 1
 	return nil
 }
 

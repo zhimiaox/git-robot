@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/jinzhu/configor"
 	cron "github.com/robfig/cron/v3"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/src-d/go-git.v4"
@@ -15,8 +16,7 @@ import (
 )
 
 const (
-	MaxErrCount = 5
-	GitPath     = "D://git/dk"
+	configPath = "config.toml"
 )
 
 var (
@@ -25,17 +25,13 @@ var (
 	userStorage UserStorage
 )
 
-func init() {
-
-}
-
 func main() {
 	var err error
-	err = Config.Init()
+	err = configor.Load(Config, configPath)
 	if err != nil {
 		panic("配置加载失败")
 	}
-	repository, err = git.PlainOpen(GitPath)
+	repository, err = git.PlainOpen(Config.Work.GitPath)
 	if err != nil {
 		panic(err)
 	}
@@ -43,6 +39,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	
 	userStorage = NewMapStorage()
 
 	StartWork()
@@ -58,7 +55,7 @@ func StartWork() {
 			if err != nil {
 				user.ErrCount++
 			}
-			if user.ErrCount > MaxErrCount {
+			if user.ErrCount > Config.Work.MaxErrCount {
 				userStorage.Del(user.Sign())
 			} else {
 				userStorage.Set(user)
@@ -72,7 +69,7 @@ func GitWork(user *User) error {
 	now := time.Now()
 	user.LastRunTime = now
 	day := now.Format("2006-01-02")
-	ioutil.WriteFile(filepath.Join(GitPath, day), []byte(now.String()), 0666)
+	ioutil.WriteFile(filepath.Join(Config.Work.GitPath, day), []byte(now.String()), 0666)
 	worktree.Add("./")
 	_, err := worktree.Commit("打卡器", &git.CommitOptions{
 		All: true,
