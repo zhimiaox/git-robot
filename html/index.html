@@ -4,9 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link type="css" href="index.css" />
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
+    <script src="https://unpkg.com/art-template/lib/template-web.js"></script>
 </head>
 <body>
-    <div class="gg">gg</div>
+<div class="container" style="min-height: 1500px">
+    <img src="/html/banner.png" class="img-fluid shadow-lg p-3 mb-5 bg-white rounded" style="opacity:0.4;">
+    <form id="addForm" onsubmit="return false;">
+        <div class="form-group">
+            <label for="remoteURL">打卡GIT仓库地址</label>
+            <input type="uri" class="form-control" id="remoteURL" aria-describedby="emailHelp" placeholder="git@github.com:zhi-miao/git-robot.git">
+            <small id="remoteURLHelp" class="form-text text-muted">目前只支持ssh格式</small>
+        </div>
+        <div class="form-group">
+            <label for="deployKeys">GIT私钥</label>
+            <textarea class="form-control" id="deployKeys" rows="5" placeholder="-----BEGIN RSA PRIVATE KEY-----
+MIIEoJVvh+Mtjeew3457T3YhFYLf68ct02UqTqK4SD/hLPNUt/hubgUF3iseFfOn
+4Fca9WXIeh+MtjeF2Xn/Z/0Vvm+zik9jOTaWlTBkUiLJpTbBaIkjshVG0O5ZAssh
+t9n6uQJVvh+MtjeF2Xn/Z/0Vvm+zik9jOTaWlTBBdyT5b+l1tTRhC8pjll0q89Sn
+WNlJmpysumr8e2A1SI4OfU/Oyuu9jbpHmIylpSA6DpAc8yz88poBZB6IoJcxvfGl
+BhsL8KrRyJJy78yw5+..."></textarea>
+            <small id="deployKeysHelp" class="form-text text-muted">此处填写私钥</small>
+        </div>
+        <div class="form-group">
+            <label for="user">提交用户名</label>
+            <input type="text" class="form-control" id="user" placeholder="倒霉狐狸">
+        </div>
+        <div class="form-group">
+            <label for="email">提交邮箱</label>
+            <input type="email" class="form-control" id="email" placeholder="email@xiaoliu.org">
+        </div>
+        <div class="text-right">
+            <button type="button" class="btn btn-primary">开启臭不要脸的自动打卡生活</button>
+        </div>
+    </form>
+    <form id="searchForm" onsubmit="return false;" style="margin-top: 50px">
+        <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="email@xiaoliu.org" id="searchEmail">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2">查看自己的自动打卡记录</button>
+            </div>
+        </div>
+    </form>
+    <div id="output"></div>
+    <div class="card">
+        <div class="card-body">
+            This is some text within a card body.
+        </div>
+    </div>
+</div>
 </body>
+<script id="tpl-user" type="text/html">
+    {{if user}}
+      <h2>{{user.name}}</h2>
+    {{/if}}
+</script>
+
+<script>
+    var user = {
+        name: "sdafds"
+    }
+    var template1 = template("tpl-user", user);
+    console.log(template1)
+</script>
+<!-- JS, Popper.js, and jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+
 </html>
