@@ -36,7 +36,7 @@ BhsL8KrRyJJy78yw5+..."></textarea>
             <input type="email" class="form-control" id="email" placeholder="email@xiaoliu.org">
         </div>
         <div class="text-right">
-            <button type="button" class="btn btn-primary">开启臭不要脸的自动打卡生活</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id="addSubmit">开启臭不要脸的自动打卡生活</button>
         </div>
     </form>
     <form id="searchForm" onsubmit="return false;" style="margin-top: 50px">
@@ -50,23 +50,54 @@ BhsL8KrRyJJy78yw5+..."></textarea>
     <div id="output"></div>
     <div class="card">
         <div class="card-body">
-            This is some text within a card body.
+            <ul class="list-group" id="userDataList">
+
+            </ul>
         </div>
     </div>
 </div>
+ 
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 <script id="tpl-user" type="text/html">
-    {{if user}}
-      <h2>{{user.name}}</h2>
-    {{/if}}
+    {{each userData}}
+       <li class="list-group-item"> {{$index}}: {{$value.name}}</li>
+    {{/each}}
 </script>
 
 <script>
-    var user = {
-        name: "sdafds"
-    }
-    var template1 = template("tpl-user", user);
-    console.log(template1)
+    $("#addSubmit").click(function(){
+        alert()
+    })
+    document.getElementById("output").innerHTML = template.render(
+        document.getElementById("tpl").innerHTML,
+        {
+            userData: [{
+                name: "倒霉狐狸"
+            }, {
+                name: "ceshi2"
+            }
+            ]
+        }, {});
 </script>
 <!-- JS, Popper.js, and jQuery -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>

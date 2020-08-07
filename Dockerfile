@@ -24,10 +24,11 @@ RUN rm -rf data/work-git && mkdir -p data/work-git && cd data/work-git \
 
 FROM alpine:3.12 AS prod
 
+COPY --from=build /build/docker-entrypoint.sh /usr/local/bin/
 COPY --from=build /build/gitrobot_server_linux_amd64 /usr/local/bin/
 COPY --from=build /build/config.toml /zhimiao/
+COPY --from=build /build/html /zhimiao/html
 COPY --from=build /build/data/work-git /zhimiao/data/work-git
-COPY --from=build /build/docker-entrypoint.sh /usr/local/bin/
 
 RUN set -eux \
     && chmod a+x /usr/local/bin/docker-entrypoint.sh \
