@@ -49,7 +49,7 @@ func main() {
 
 func StartWork() {
 	c := cron.New(cron.WithSeconds())
-	c.AddFunc("0 /5 * * * ?", func() {
+	c.AddFunc("1 0 0,12 * * ?", func() {
 		for _, user := range userStorage.List() {
 			err := GitWork(user)
 			if err != nil {
