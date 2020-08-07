@@ -6,7 +6,12 @@
     <title>Document</title>
     <!-- CSS only -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" />
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
     <script src="https://unpkg.com/art-template/lib/template-web.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container" style="min-height: 1500px">
@@ -14,36 +19,36 @@
     <form id="addForm" onsubmit="return false;">
         <div class="form-group">
             <label for="remoteURL">打卡GIT仓库地址</label>
-            <input type="uri" class="form-control" id="remoteURL" aria-describedby="emailHelp" placeholder="git@github.com:zhi-miao/git-robot.git">
+            <input type="uri" class="form-control" name="remote_url" aria-describedby="emailHelp" placeholder="git@github.com:zhi-miao/git-robot.git" required>
             <small id="remoteURLHelp" class="form-text text-muted">目前只支持ssh格式</small>
         </div>
         <div class="form-group">
             <label for="deployKeys">GIT私钥</label>
-            <textarea class="form-control" id="deployKeys" rows="5" placeholder="-----BEGIN RSA PRIVATE KEY-----
+            <textarea class="form-control" name="deploy_keys" rows="5" placeholder="-----BEGIN RSA PRIVATE KEY-----
 MIIEoJVvh+Mtjeew3457T3YhFYLf68ct02UqTqK4SD/hLPNUt/hubgUF3iseFfOn
 4Fca9WXIeh+MtjeF2Xn/Z/0Vvm+zik9jOTaWlTBkUiLJpTbBaIkjshVG0O5ZAssh
 t9n6uQJVvh+MtjeF2Xn/Z/0Vvm+zik9jOTaWlTBBdyT5b+l1tTRhC8pjll0q89Sn
 WNlJmpysumr8e2A1SI4OfU/Oyuu9jbpHmIylpSA6DpAc8yz88poBZB6IoJcxvfGl
-BhsL8KrRyJJy78yw5+..."></textarea>
+BhsL8KrRyJJy78yw5+..." required></textarea>
             <small id="deployKeysHelp" class="form-text text-muted">此处填写私钥</small>
         </div>
         <div class="form-group">
             <label for="user">提交用户名</label>
-            <input type="text" class="form-control" id="user" placeholder="倒霉狐狸">
+            <input type="text" class="form-control" name="user" placeholder="倒霉狐狸" required>
         </div>
         <div class="form-group">
             <label for="email">提交邮箱</label>
-            <input type="email" class="form-control" id="email" placeholder="email@xiaoliu.org">
+            <input type="email" class="form-control" name="email" placeholder="email@xiaoliu.org" required>
         </div>
         <div class="text-right">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id="addSubmit">开启臭不要脸的自动打卡生活</button>
+            <button type="submit" class="btn btn-primary" name="addSubmit">开启臭不要脸的自动打卡生活</button>
         </div>
     </form>
     <form id="searchForm" onsubmit="return false;" style="margin-top: 50px">
         <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="email@xiaoliu.org" id="searchEmail">
+            <input type="email" class="form-control" placeholder="email@xiaoliu.org" name="searchEmail" id="searchEmail" required>
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2">查看自己的自动打卡记录</button>
+                <button class="btn btn-outline-secondary" type="submit">查看自己的自动打卡记录</button>
             </div>
         </div>
     </form>
@@ -62,17 +67,16 @@ BhsL8KrRyJJy78yw5+..."></textarea>
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h6 class="modal-title" id="exampleModalLabel">确认的框框</h6>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          ...
+
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -80,29 +84,68 @@ BhsL8KrRyJJy78yw5+..."></textarea>
 </body>
 <script id="tpl-user" type="text/html">
     {{each userData}}
-       <li class="list-group-item"> {{$index}}: {{$value.name}}</li>
+       <li class="list-group-item">
+           <button type="button" class="close" aria-label="关闭">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h6>{{$value.remote_url}}</h6>
+            <p>{{$value.user}}< {{$value.email}} >  错误次数：{{$value.err_count}}  上次执行：{{$value.last_run_time}} </p>
+       </li>
     {{/each}}
+</script>
+<script id="tpl-alert1" type="text/html">
+    <div class="alert alert-danger" role="alert">
+        请保存好下方的hash，删除的时候需要用到的哦，当然，如果任务多次执行失败，系统也会将你的打卡任务给删除的
+    </div>
+    <div class="alert alert-success" role="alert" style="word-break:break-all;">
+        {{key}}
+    </div>
 </script>
 
 <script>
-    $("#addSubmit").click(function(){
-        alert()
-    })
-    document.getElementById("output").innerHTML = template.render(
-        document.getElementById("tpl").innerHTML,
-        {
-            userData: [{
-                name: "倒霉狐狸"
-            }, {
-                name: "ceshi2"
+    $("#addForm").submit(function () {
+        $.post(
+            "/api/user",
+            $("#addForm").serialize(),
+            function(data, status){
+                tplAlert1(data)
             }
-            ]
-        }, {});
+        );
+    });
+    $("#searchForm").submit(function() {
+        email = $("#searchEmail").val()
+        $.get("/api/user/search?email="+email, function (data, status) {
+            $("#userDataList").html(template.render(
+                $("#tpl-user").html(),
+                {userData: data}
+                )
+            )
+        })
+    })
+    $("#userDataList").on("click",'button', function () {
+        var s = prompt("请输入hash密钥");
+        if (s) {
+            $.ajax({
+                url:"/api/user/"+s,
+                type: "delete",
+                success: function (data) {
+                    alert("删除成功")
+                    $("#searchForm").submit()
+                }
+            })
+        }
+    })
+    function tplAlert1(key) {
+        $('#exampleModal .modal-body').html(
+            template.render(
+                $("#tpl-alert1").html(),
+                {key: key}
+            )
+        )
+        $('#exampleModal').modal('show')
+    }
+
 </script>
-<!-- JS, Popper.js, and jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+
 
 </html>

@@ -60,6 +60,7 @@ func Set(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+	GitWork(user)
 	c.JSON(http.StatusOK, user.Sign())
 }
 

@@ -32,10 +32,10 @@ func (u *User) TOVO() *userResp {
 }
 
 type userParam struct {
-	RemoteURL  string `json:"remote_url" binding:"required"`
-	DeployKeys string `json:"deploy_keys" binding:"required"`
-	User       string `json:"user" binding:"required"`
-	Email      string `json:"email" binding:"required"`
+	RemoteURL  string `form:"remote_url" json:"remote_url" binding:"required"`
+	DeployKeys string `form:"deploy_keys" json:"deploy_keys" binding:"required"`
+	User       string `form:"user" json:"user" binding:"required"`
+	Email      string `form:"email" json:"email" binding:"required"`
 }
 
 func (p *userParam) TOUser() *User {

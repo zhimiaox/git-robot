@@ -39,7 +39,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	userStorage = NewMapStorage()
 
 	StartWork()
@@ -49,7 +49,7 @@ func main() {
 
 func StartWork() {
 	c := cron.New(cron.WithSeconds())
-	c.AddFunc("0 * * * * ?", func() {
+	c.AddFunc("0 /5 * * * ?", func() {
 		for _, user := range userStorage.List() {
 			err := GitWork(user)
 			if err != nil {
